@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import objects.User;
+import panels.AddContactPanel;
 import panels.MainInterface;
 import panels.SignInPanel;
 import panels.StartPanel;
@@ -43,10 +44,6 @@ public class DBManager {
 		}
 	}
 	
-	public static boolean userExists(String user) {
-		return getUserList().contains((String) user);
-	}
-	
 	public static String getUserPassword(String user) {
 		return getText(userPath.resolve(user).resolve("password.txt")); //get the password path
 	}
@@ -62,6 +59,34 @@ public class DBManager {
 			System.out.println(error.getMessage());
 			return "";
 		}
+	}
+	
+	public static Path getUserPath() {
+		return userPath;
+	}
+	
+	private static ArrayList<String> getUserList(){
+		File userPathFile = userPath.toFile();
+		String[] files = userPathFile.list();
+//		String[] files = userPath.toFile().list(); the same but less readable
+		return new ArrayList<String>(Arrays.asList(files));
+	}
+	
+	private static ArrayList<String> getContactList(User user){
+		File contactPath = user.getContactPath().toFile();
+		return new ArrayList<String>(Arrays.asList(contactPath.list()));
+	}
+	
+	private static ArrayList<Integer> getIdsFromContacts(User user){
+		ArrayList<Integer> ids = new ArrayList<>();
+		for (String contact: getContactList(user)) {
+			ids.add(Integer.valueOf(getText(user.getContactPath().resolve(contact).resolve("id.txt"))));
+		}
+		return ids;
+	}
+	
+	public static boolean userExists(String user) {
+		return getUserList().contains((String) user);
 	}
 	
 	public static void tryLogIn(String userName , String password) { //tries a logIn, if is not successful calls error function
@@ -131,10 +156,24 @@ public class DBManager {
 		}
 	}
 	
-	private static ArrayList<String> getUserList(){
-		File userPathFile = userPath.toFile();
-		String[] files = userPathFile.list();
-		return new ArrayList<String>(Arrays.asList(files));
+	public static boolean canAddContact(User user , String name) {
+		if (getContactList(user).contains(name)) {
+			AddContactPanel.getInstance().addContactError("Username not aviable"); return false;
+		}
+		return true;
+	}
+	
+	public static void addContact(User user , String name) {
+		
+		Path contactFolder = user.getContactPath().resolve(name);
+		Path chatFolder = contactFolder.resolve("chat");
+		Path nameText = contactFolder.resolve("name.txt");
+		Path idText = contactFolder.resolve("id.txt");
+		
+		createIfNotExists(contactFolder , "directory");
+		createIfNotExists(chatFolder , "directory");
+		createIfNotExists(nameText , "text");
+		createIfNotExists(idText , "text");
 	}
 	
 	

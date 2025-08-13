@@ -1,6 +1,7 @@
 package panels;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -33,7 +34,10 @@ public class UserMainPanel extends JPanel {
 			
 			JMenuItem addContact = new JMenuItem("New contact");
 			addContact.addActionListener(e -> MainInterface.addContactPanel(user));
+//			addContact.setPreferredSize(new Dimension(200 , 50));
+			addContact.setFont(getFont().deriveFont(14f));
 			JMenuItem addGroup = new JMenuItem("New group");
+			addGroup.setFont(getFont().deriveFont(14f));
 			
 			addMenu.add(addContact);
 			addMenu.add(addGroup);
