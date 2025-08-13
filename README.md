@@ -1,0 +1,1 @@
+App for chatting between diferent users. Database is made up of text files, there isn't encoding yet. Folder for database is created when the app first open.
