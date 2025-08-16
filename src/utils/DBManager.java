@@ -73,14 +73,27 @@ public class DBManager {
 	}
 	
 	private static ArrayList<String> getContactList(User user){
-		File contactPath = user.getContactPath().toFile();
-		return new ArrayList<String>(Arrays.asList(contactPath.list()));
+		String[] contactList = user.getContactPath().toFile().list();
+		return contactList == null 
+				? new ArrayList<String>() 
+				: new ArrayList<String>(Arrays.asList(contactList));
+//		String[] matrixList = Arrays.asList(contactPath.list());
+//		ArrayList<String> list = new ArrayList<String>();
+//		return new ArrayList<String>(Arrays.asList(contactPath.list()));
 	}
 	
 	private static ArrayList<Integer> getIdsFromContacts(User user){
 		ArrayList<Integer> ids = new ArrayList<>();
 		for (String contact: getContactList(user)) {
 			ids.add(Integer.valueOf(getText(user.getContactPath().resolve(contact).resolve("id.txt"))));
+		}
+		return ids;
+	}
+	
+	private static ArrayList<Integer> getAllIds(){
+		ArrayList<Integer> ids = new ArrayList<>();
+		for (String user: getUserList()) {
+			ids.add(Integer.valueOf(getText(getUser(user).getUserPath().resolve("id.txt"))));
 		}
 		return ids;
 	}
@@ -97,6 +110,7 @@ public class DBManager {
 		if (!(getUserPassword(userName).equals(password))) {
 			StartPanel.getInstance().startError("Incorrect password");return;
 		}
+		createIfNotExists(getUserPath().resolve(userName).resolve("contacts") , "directory");
 		MainInterface.userPanel(getUser(userName));
 		
 	}
@@ -123,7 +137,7 @@ public class DBManager {
 		Path passwordText = newUser.resolve("password.txt");
 		Path idText = newUser.resolve("id.txt");
 		Path configText = newUser.resolve("config.txt");
-		Path contactsDir = newUser.resolve("contacs");
+		Path contactsDir = newUser.resolve("contacts");
 		
 		createIfNotExists(newUser , "directory");
 		createIfNotExists(passwordText , "text");
@@ -156,14 +170,27 @@ public class DBManager {
 		}
 	}
 	
-	public static boolean canAddContact(User user , String name) {
+	public static boolean canAddContact(User user , String name , int id) {
 		if (getContactList(user).contains(name)) {
 			AddContactPanel.getInstance().addContactError("Username not aviable"); return false;
 		}
+		if (getIdsFromContacts(user).contains(id)) {
+			AddContactPanel.getInstance().addContactError("Existing contact"); return false;
+		}
+		if (!(getAllIds().contains(id))) {
+			AddContactPanel.getInstance().addContactError("No existing user"); return false;
+		}
+		if (user.getId() == id) {
+			AddContactPanel.getInstance().addContactError("This is your id"); return false;
+		}
+		if (id < 0) {
+			AddContactPanel.getInstance().addContactError("Enter a valid id"); return false;
+		}
+		
 		return true;
 	}
 	
-	public static void addContact(User user , String name) {
+	public static void addContact(User user , String name , int id) {
 		
 		Path contactFolder = user.getContactPath().resolve(name);
 		Path chatFolder = contactFolder.resolve("chat");
@@ -174,6 +201,15 @@ public class DBManager {
 		createIfNotExists(chatFolder , "directory");
 		createIfNotExists(nameText , "text");
 		createIfNotExists(idText , "text");
+		
+		try {
+			
+			Files.writeString(nameText , name);
+			Files.writeString(idText, String.valueOf(id));
+			
+		} catch (IOException e) {
+			
+		}
 	}
 	
 	

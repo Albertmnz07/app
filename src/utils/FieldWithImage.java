@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 
 
@@ -45,6 +47,10 @@ public class FieldWithImage extends JPanel {
 	
 	public String getText() {
 		return placeHolder ? "" : entry.getText();
+	}
+	
+	public void setText(String text) {
+		entry.setText(text);
 	}
 	
 	public boolean isPlaceHolder() {
@@ -114,6 +120,11 @@ public class FieldWithImage extends JPanel {
 				((JPasswordField) entry).setEchoChar('*');
 			}
 		}
+	}
+	
+	public void setDocumentListener(DocumentListener d) {
+		Document doc = entry.getDocument();
+		doc.addDocumentListener(d);
 	}
 	
 	private String text;

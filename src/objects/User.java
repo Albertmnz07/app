@@ -21,8 +21,16 @@ public class User {
 		
 	}
 	
+	public Path getUserPath() {
+		return userPath;
+	}
+	
 	public Path getContactPath() {
 		return contactPath;
+	}
+	
+	public int getId() {
+		return id;
 	}
 	
 	//getter for psthd

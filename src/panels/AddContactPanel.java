@@ -5,6 +5,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+
 import interfaces.cleneable;
 import objects.User;
 import utils.FieldWithImage;
@@ -13,6 +18,7 @@ import utils.DBManager;
 public class AddContactPanel extends JPanel implements cleneable {
 	
 	private FieldWithImage nameEntry, idEntry;
+	@SuppressWarnings("unused")
 	private User user;
 	private JButton createButton , exitButton;
 	private JLabel errorLabel;
@@ -39,6 +45,7 @@ public class AddContactPanel extends JPanel implements cleneable {
 		
 		config.gridy = 2;
 		idEntry = new FieldWithImage("/images/id.png" , "id" , false , null);
+		idEntry.setDocumentListener(new checkIdFormat());
 		add(idEntry , config);
 		
 		config.gridy = 3;
@@ -46,15 +53,22 @@ public class AddContactPanel extends JPanel implements cleneable {
 		createButton.setFont(new Font("Ubuntu" , Font.BOLD , 15));
 		createButton.setPreferredSize(new Dimension(130 , 35));
 		createButton.addActionListener(e -> {
-			if (DBManager.canAddContact(user , nameEntry.getText())){
-				DBManager.addContact(user, nameEntry.getText());
+			if (!(nameEntry.isPlaceHolder() || idEntry.isPlaceHolder())) {
+				if (DBManager.canAddContact(user , nameEntry.getText() , Integer.valueOf(idEntry.getText()))){
+				DBManager.addContact(user, nameEntry.getText() , Integer.valueOf(idEntry.getText()));
+				MainInterface.userPanel(user);
+				}
+			} else {
+				errorLabel.setText("Please, fill both gaps");
 			}
+			
 		});
 		add(createButton , config);
 		
 		config.gridy = 4;
 		errorLabel = new JLabel("");
 		errorLabel.setFont(new Font("Ubuntu", Font.PLAIN, 20));
+		add(errorLabel , config);
 		
 		config.gridy = 5;
 		exitButton = new JButton("<-");
@@ -79,5 +93,44 @@ public class AddContactPanel extends JPanel implements cleneable {
 	public void clean() {
 		nameEntry.cleanField();
 		idEntry.cleanField();
+	}
+	
+	private class checkIdFormat implements DocumentListener{
+		
+		String previusText = "";
+		String changed = "";
+		
+		public void insertUpdate(DocumentEvent e) {
+			
+			Document info = e.getDocument();
+			int offset = e.getOffset();
+			int length = e.getLength();
+			try {
+				changed = info.getText(offset, length);
+			} catch (BadLocationException e1) {
+				System.out.println("error");
+			}
+			
+			for (int i = 0 ; i < changed.length() ; i++) {
+				Character c = changed.charAt(i);
+				if (!(Character.isDigit(c))) {
+					errorLabel.setText("Please set a number in id");
+					SwingUtilities.invokeLater(() -> idEntry.setText(previusText));
+					return;
+				}
+			}
+			
+			previusText = idEntry.getText();
+			
+		}
+
+		public void removeUpdate(DocumentEvent e) {
+			
+		}
+
+		public void changedUpdate(DocumentEvent e) {
+			
+		}
+		
 	}
 }
