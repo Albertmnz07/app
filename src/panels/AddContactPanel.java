@@ -12,7 +12,7 @@ import javax.swing.text.Document;
 
 import interfaces.cleneable;
 import objects.User;
-import utils.FieldWithImage;
+import utilPanels.FieldWithImage;
 import utils.DBManager;
 
 public class AddContactPanel extends JPanel implements cleneable {

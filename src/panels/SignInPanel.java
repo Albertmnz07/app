@@ -9,8 +9,8 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import interfaces.cleneable;
+import utilPanels.FieldWithImage;
 import utils.DBManager;
-import utils.FieldWithImage;
 
 public class SignInPanel extends JPanel implements cleneable {
 	

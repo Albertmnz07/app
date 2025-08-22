@@ -1,13 +1,11 @@
 package panels;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-
 import javax.swing.*;
 import objects.User;
+import utilPanels.ChatPreview;
+import utils.DBManager;
 
 public class UserMainPanel extends JPanel {
 	
@@ -18,8 +16,12 @@ public class UserMainPanel extends JPanel {
 		 this.user = user;
 		 setLayout(new BorderLayout());
 		 
+		 JScrollPane scrollChat = new JScrollPane(new ChatsPanel());
+		 scrollChat.getVerticalScrollBar().setUnitIncrement(16);
+		 scrollChat.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		 
 		 add(new ToolBar() , BorderLayout.NORTH);
-		 add(new ChatPanel() , BorderLayout.CENTER);
+		 add(scrollChat , BorderLayout.CENTER);
 		 
 		 
 	}
@@ -59,9 +61,15 @@ public class UserMainPanel extends JPanel {
 		}
 	}
 	
-	private class ChatPanel extends JPanel{
+	private class ChatsPanel extends JPanel{
 		
-		public ChatPanel() {
+		public ChatsPanel() {
+			
+			setLayout(new BoxLayout(this , BoxLayout.Y_AXIS));
+			
+			for (String contact: DBManager.getContactList(user)) {
+				add(new ChatPreview(user , contact));
+			}
 			
 		}
 	}

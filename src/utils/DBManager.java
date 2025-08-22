@@ -4,6 +4,8 @@ import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import objects.Message;
 import objects.User;
 import panels.AddContactPanel;
 import panels.MainInterface;
@@ -13,6 +15,11 @@ import panels.StartPanel;
 import java.io.File;
 
 public class DBManager {
+	
+	private static Path db = Paths.get("db");
+	private static Path userPath = Paths.get("db" , "user");
+	private static Path adminPath = Paths.get("db" , "admin");
+	private static Path nextId = Paths.get("db" , "nextId.txt");
 	
 	public static void checkDB()  {
 		createIfNotExists(db , "directory");
@@ -61,8 +68,27 @@ public class DBManager {
 		}
 	}
 	
+	public static Message getLastMessage(User user , String contact) {
+		
+		List<String> lines;
+		
+		try {
+			lines = Files.readAllLines(getChatPath(user , contact));
+			if (!(lines.isEmpty())) {
+				return new Message(lines.get(lines.size() - 1)); 
+			}
+		} catch (IOException e) {
+			System.out.println("error in last message");
+		}
+		return new Message();
+	}
+	
 	public static Path getUserPath() {
 		return userPath;
+	}
+	
+	public static Path getChatPath(User user , String contact) {
+		return user.getContactPath().resolve(contact).resolve("chat.txt");
 	}
 	
 	private static ArrayList<String> getUserList(){
@@ -72,7 +98,7 @@ public class DBManager {
 		return new ArrayList<String>(Arrays.asList(files));
 	}
 	
-	private static ArrayList<String> getContactList(User user){
+	public static ArrayList<String> getContactList(User user){
 		String[] contactList = user.getContactPath().toFile().list();
 		return contactList == null 
 				? new ArrayList<String>() 
@@ -193,12 +219,12 @@ public class DBManager {
 	public static void addContact(User user , String name , int id) {
 		
 		Path contactFolder = user.getContactPath().resolve(name);
-		Path chatFolder = contactFolder.resolve("chat");
+		Path chatText = contactFolder.resolve("chat.txt");
 		Path nameText = contactFolder.resolve("name.txt");
 		Path idText = contactFolder.resolve("id.txt");
 		
 		createIfNotExists(contactFolder , "directory");
-		createIfNotExists(chatFolder , "directory");
+		createIfNotExists(chatText , "text");
 		createIfNotExists(nameText , "text");
 		createIfNotExists(idText , "text");
 		
@@ -208,15 +234,8 @@ public class DBManager {
 			Files.writeString(idText, String.valueOf(id));
 			
 		} catch (IOException e) {
-			
+			System.out.println("error adding contact");
 		}
 	}
-	
-	
-	
-	private static Path db = Paths.get("db");
-	private static Path userPath = Paths.get("db" , "user");
-	private static Path adminPath = Paths.get("db" , "admin");
-	private static Path nextId = Paths.get("db" , "nextId.txt");
 
 }
