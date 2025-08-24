@@ -1,17 +1,19 @@
 package utilPanels;
 
 import objects.User;
-import utils.DBManager;
 
 import javax.swing.*;
+
+import controlers.DBManager;
+import java.awt.Point;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 
 public class ChatPreview extends JPanel {
 	
@@ -22,6 +24,10 @@ public class ChatPreview extends JPanel {
 	public ChatPreview(User user , String contact) {
 		this.user = user;
 		
+		Toolkit toolkit = Toolkit.getDefaultToolkit();
+		setCursor(toolkit.createCustomCursor(DBManager.getImage("hearth.png").getImage(), new Point(0,0), "hearth"));
+		setBackground(Color.cyan);
+		
 		setLayout(new GridBagLayout());
 		GridBagConstraints config = new GridBagConstraints();
 		config.fill = GridBagConstraints.NONE;
@@ -30,18 +36,20 @@ public class ChatPreview extends JPanel {
 		config.gridx = 0;
 		config.insets = new Insets(0,10,0,0);
 		
-		JLabel imageLabel = new JLabel(new ImageIcon(getClass().getResource("/images/bigGuy.png")));
+		JLabel imageLabel = new JLabel(DBManager.getImage("bigGuy.png"));
 		add(imageLabel , config);
 		
 		config.fill = GridBagConstraints.HORIZONTAL;
 		
 		JPanel rightPanel = new JPanel(new BorderLayout());
+		rightPanel.setBackground(Color.cyan);
 		
 		JLabel nameLabel = new JLabel(contact);
 		nameLabel.setFont(font);
 		rightPanel.add(nameLabel , BorderLayout.NORTH);
 		
 		JPanel downPanel = new JPanel(new BorderLayout());
+		downPanel.setBackground(Color.cyan);
 		
 		JLabel message = new JLabel(DBManager.getLastMessage(user, contact).getText());
 		message.setFont(font);
@@ -63,7 +71,6 @@ public class ChatPreview extends JPanel {
 		
 		setPreferredSize(new Dimension(400, 80));
 		setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
-
 
 	}
 

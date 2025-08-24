@@ -1,16 +1,16 @@
-package utils;
+package controlers;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+import javax.swing.ImageIcon;
+import UI.AddContactPanel;
+import UI.SignInPanel;
+import UI.StartPanel;
 import objects.Message;
 import objects.User;
-import panels.AddContactPanel;
-import panels.MainInterface;
-import panels.SignInPanel;
-import panels.StartPanel;
 
 import java.io.File;
 
@@ -137,7 +137,7 @@ public class DBManager {
 			StartPanel.getInstance().startError("Incorrect password");return;
 		}
 		createIfNotExists(getUserPath().resolve(userName).resolve("contacts") , "directory");
-		MainInterface.userPanel(getUser(userName));
+		UIManager.userMain(getUser(userName));
 		
 	}
 	
@@ -237,5 +237,10 @@ public class DBManager {
 			System.out.println("error adding contact");
 		}
 	}
-
+	
+	public static ImageIcon getImage(String image) {
+		String imageString = "/resources/images/" + image;
+		URL imageURL = DBManager.class.getResource(imageString);
+		return new ImageIcon(imageURL);
+	}
 }

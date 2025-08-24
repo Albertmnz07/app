@@ -1,9 +1,7 @@
 package objects;
 
-import java.io.File;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import utils.DBManager;
+import controlers.DBManager;
 
 public class User {
 	
@@ -21,6 +19,14 @@ public class User {
 		
 	}
 	
+	public String getName() {
+		return name;
+	}
+	
+	public String getPassword() {
+		return password;
+	}
+	
 	public Path getUserPath() {
 		return userPath;
 	}
@@ -32,6 +38,4 @@ public class User {
 	public int getId() {
 		return id;
 	}
-	
-	//getter for psthd
 }

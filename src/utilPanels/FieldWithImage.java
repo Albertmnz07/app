@@ -9,6 +9,8 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 
+import controlers.DBManager;
+
 
 public class FieldWithImage extends JPanel {
 	
@@ -20,8 +22,8 @@ public class FieldWithImage extends JPanel {
 		setLayout(new BorderLayout());
 		setPreferredSize(new Dimension(200 , 30));
 		
-		ImageIcon icon = new ImageIcon(getClass().getResource(rute));
-		JLabel imageLabel = new JLabel(icon);
+//		ImageIcon icon = new ImageIcon(getClass().getResource(rute));
+		JLabel imageLabel = new JLabel(DBManager.getImage(rute));
 		imageLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
 		imageLabel.addMouseListener(new FocusImage());
 		add(imageLabel , BorderLayout.WEST);

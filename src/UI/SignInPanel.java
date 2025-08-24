@@ -1,4 +1,4 @@
-package panels;
+package UI;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -7,10 +7,10 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.*;
 import javax.swing.*;
-
+import controlers.UIManager;
+import controlers.DBManager;
 import interfaces.cleneable;
 import utilPanels.FieldWithImage;
-import utils.DBManager;
 
 public class SignInPanel extends JPanel implements cleneable {
 	
@@ -30,15 +30,15 @@ public class SignInPanel extends JPanel implements cleneable {
 		add(titleLabel , config);
 		
 		config.gridy = 1;
-		userEntry = new FieldWithImage("/images/guy.png" , "username" , false , Color.RED);
+		userEntry = new FieldWithImage("guy.png" , "username" , false , Color.RED);
 		add(userEntry , config);
 		
 		config.gridy = 2;
-		passwordEntry = new FieldWithImage("/images/key.png" , "password" , true , Color.RED);
+		passwordEntry = new FieldWithImage("key.png" , "password" , true , Color.RED);
 		add(passwordEntry , config);
 		
 		config.gridy = 3;
-		confirmPasswordEntry = new FieldWithImage("/images/loop.png" , "confirm password" , true , Color.RED);
+		confirmPasswordEntry = new FieldWithImage("loop.png" , "confirm password" , true , Color.RED);
 		add(confirmPasswordEntry , config);
 		
 		config.gridy = 4;
@@ -106,7 +106,7 @@ public class SignInPanel extends JPanel implements cleneable {
 	
 	private void backStart() {
 		updateIdLabel();
-		MainInterface.changePanel("Start" , instance);
+		UIManager.start();
 	}
 	
 	private FieldWithImage userEntry , passwordEntry , confirmPasswordEntry;

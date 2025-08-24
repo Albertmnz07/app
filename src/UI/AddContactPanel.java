@@ -1,4 +1,4 @@
-package panels;
+package UI;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -9,11 +9,11 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
-
+import controlers.UIManager;
+import controlers.DBManager;
 import interfaces.cleneable;
 import objects.User;
 import utilPanels.FieldWithImage;
-import utils.DBManager;
 
 public class AddContactPanel extends JPanel implements cleneable {
 	
@@ -40,11 +40,11 @@ public class AddContactPanel extends JPanel implements cleneable {
 		add(titleLabel, config);
 		
 		config.gridy = 1;
-		nameEntry = new FieldWithImage("/images/guy.png" , "name" , false , null);
+		nameEntry = new FieldWithImage("guy.png" , "name" , false , null);
 		add(nameEntry , config);
 		
 		config.gridy = 2;
-		idEntry = new FieldWithImage("/images/id.png" , "id" , false , null);
+		idEntry = new FieldWithImage("id.png" , "id" , false , null);
 		idEntry.setDocumentListener(new checkIdFormat());
 		add(idEntry , config);
 		
@@ -56,7 +56,7 @@ public class AddContactPanel extends JPanel implements cleneable {
 			if (!(nameEntry.isPlaceHolder() || idEntry.isPlaceHolder())) {
 				if (DBManager.canAddContact(user , nameEntry.getText() , Integer.valueOf(idEntry.getText()))){
 				DBManager.addContact(user, nameEntry.getText() , Integer.valueOf(idEntry.getText()));
-				MainInterface.userPanel(user);
+				UIManager.userMain(user);
 				}
 			} else {
 				errorLabel.setText("Please, fill both gaps");
@@ -76,7 +76,7 @@ public class AddContactPanel extends JPanel implements cleneable {
 		exitButton.setPreferredSize(new Dimension(130 , 35));
 		exitButton.addActionListener(e -> {
 			clean();
-			MainInterface.userPanel(user);
+			UIManager.userMain(user);
 		});
 		add(exitButton , config);
 		

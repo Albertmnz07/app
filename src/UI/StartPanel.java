@@ -1,5 +1,6 @@
-package panels;
+package UI;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -7,10 +8,10 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.*;
 import javax.swing.*;
-
+import controlers.UIManager;
+import controlers.DBManager;
 import interfaces.cleneable;
 import utilPanels.FieldWithImage;
-import utils.DBManager;
 
 public class StartPanel extends JPanel implements cleneable {
 	
@@ -32,16 +33,17 @@ public class StartPanel extends JPanel implements cleneable {
 		
 		//------------------FIELDS------------------------------------------------------
 		config.gridy = 1;
-		userField = new FieldWithImage("/images/guy.png" , "username" , false , Color.CYAN);
+		userField = new FieldWithImage("guy.png" , "username" , false , Color.CYAN);
 		add(userField , config);
 		
 		config.gridy = 2;
-		passwordField = new FieldWithImage("/images/key.png" , "password" , true , Color.CYAN);
+		passwordField = new FieldWithImage("key.png" , "password" , true , Color.CYAN);
 		add(passwordField , config);
 		
 		//--------------------Log in------------------------------------------------------------
 		config.gridy = 3;
 		loginButton = new JButton("Log in");
+		loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		loginButton.setPreferredSize(new Dimension(150 , 35));
 		loginButton.setFont(new Font("Ubuntu" , Font.BOLD , 15));
 		loginButton.addActionListener(new ActionListener() {
@@ -67,12 +69,13 @@ public class StartPanel extends JPanel implements cleneable {
 		config.gridy = 6;
 		config.insets = new Insets(10, 0, 20, 0);
 		signInButton = new JButton("Sign In");
+		signInButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		signInButton.setPreferredSize(new Dimension(150 , 35));
 		signInButton.setFont(new Font("Ubuntu" , Font.BOLD , 15));
 		
 		signInButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				MainInterface.changePanel("SignIn" , instance);
+				UIManager.signIn();
 			}
 		});
 		
