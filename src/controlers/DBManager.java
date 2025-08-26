@@ -11,7 +11,7 @@ import UI.SignInPanel;
 import UI.StartPanel;
 import objects.Message;
 import objects.User;
-
+import java.awt.Image;
 import java.io.File;
 
 public class DBManager {
@@ -242,5 +242,15 @@ public class DBManager {
 		String imageString = "/resources/images/" + image;
 		URL imageURL = DBManager.class.getResource(imageString);
 		return new ImageIcon(imageURL);
+	}
+	
+	public static ImageIcon getResizedImage(String stringImage , String mode) {
+		Image image = getImage(stringImage).getImage();
+		
+		switch (mode) {
+		case "preview": return new ImageIcon(image.getScaledInstance(64, 64, Image.SCALE_SMOOTH));
+		case "chat": return new ImageIcon(image.getScaledInstance(16, 16, Image.SCALE_SMOOTH));
+		default: return null;
+		}
 	}
 }
