@@ -1,4 +1,4 @@
-package UI;
+package panels.UI;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -6,12 +6,11 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import javax.swing.*;
 import controlers.UIManager;
 import controlers.DBManager;
 import objects.User;
-import utilPanels.ChatPreview;
+import panels.utilPanels.ChatPreview;
 
 public class UserMainPanel extends JPanel {
 	
@@ -92,7 +91,7 @@ public class UserMainPanel extends JPanel {
 			
 			setLayout(new BoxLayout(this , BoxLayout.Y_AXIS));
 			
-			for (String contact: DBManager.getContactList(user)) {
+			for (String contact: DBManager.getContactNamesList(user)) {
 				ChatPreview chat = new ChatPreview(user , contact);
 				chat.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent e) {

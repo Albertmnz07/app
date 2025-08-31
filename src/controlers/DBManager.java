@@ -2,15 +2,17 @@ package controlers;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.ImageIcon;
-import UI.AddContactPanel;
-import UI.SignInPanel;
-import UI.StartPanel;
 import objects.Message;
 import objects.User;
+import panels.UI.AddContactPanel;
+import panels.UI.SignInPanel;
+import panels.UI.StartPanel;
 import java.awt.Image;
 import java.io.File;
 
@@ -39,9 +41,19 @@ public class DBManager {
 		
 	}
 	
-	public static User getUser(String name) {
+	public static User getUserFromName(String name) {
 		return new User(name);
 	}
+	
+	public static User getUserFromId(int id) {
+		for (User user: getUserList()) {
+			if (user.getId() == id) {
+				return new User(user.getName());
+			}
+		}
+		return null;
+	}
+
 	
 	public static int getNextId() {
 		try {
@@ -63,8 +75,9 @@ public class DBManager {
 		try {
 			return Files.readString(path);
 		} catch (IOException error) {
-			System.out.println(error.getMessage());
-			return "";
+			error.printStackTrace(); //CONTINUE HERE
+			System.out.println("error in get text");
+			return null;
 		}
 	}
 	
@@ -91,41 +104,73 @@ public class DBManager {
 		return user.getContactPath().resolve(contact).resolve("chat.txt");
 	}
 	
-	private static ArrayList<String> getUserList(){
+	private static ArrayList<User> getUserList(){
 		File userPathFile = userPath.toFile();
 		String[] files = userPathFile.list();
-//		String[] files = userPath.toFile().list(); the same but less readable
-		return new ArrayList<String>(Arrays.asList(files));
+		ArrayList<User> list = new ArrayList<>();
+		for (String user: files) {
+			list.add(new User(user));
+		}
+		return list;
 	}
 	
-	public static ArrayList<String> getContactList(User user){
+	private static ArrayList<String> getUsernamesList() {
+		String[] list = userPath.toFile().list();
+		return new ArrayList<String>(Arrays.asList(list));
+	}
+	
+	public static ArrayList<String> getContactNamesList(User user){
 		String[] contactList = user.getContactPath().toFile().list();
 		return contactList == null 
 				? new ArrayList<String>() 
 				: new ArrayList<String>(Arrays.asList(contactList));
-//		String[] matrixList = Arrays.asList(contactPath.list());
-//		ArrayList<String> list = new ArrayList<String>();
-//		return new ArrayList<String>(Arrays.asList(contactPath.list()));
 	}
 	
 	private static ArrayList<Integer> getIdsFromContacts(User user){
 		ArrayList<Integer> ids = new ArrayList<>();
-		for (String contact: getContactList(user)) {
+		for (String contact: getContactNamesList(user)) {
 			ids.add(Integer.valueOf(getText(user.getContactPath().resolve(contact).resolve("id.txt"))));
 		}
 		return ids;
 	}
 	
+	private static String getContactFromId(User user , int id) {
+		for (String contact: getContactNamesList(user)) {
+			if (getText(user.getContactPath().resolve(contact).resolve("id.txt")).equals(String.valueOf(id))) {
+				return contact;
+			}
+		}
+		return null;
+	}
+	
+	private static int getContactId(User user , String contact) {
+		String text = getText(user.getContactPath().resolve(contact).resolve("id.txt"));
+		return Integer.valueOf(text);
+	}
 	private static ArrayList<Integer> getAllIds(){
 		ArrayList<Integer> ids = new ArrayList<>();
-		for (String user: getUserList()) {
-			ids.add(Integer.valueOf(getText(getUser(user).getUserPath().resolve("id.txt"))));
+		for (User user: getUserList()) {
+			ids.add(user.getId());
 		}
 		return ids;
 	}
 	
+	public static ArrayList<Message> getMessages(User user , String contact){
+		String[] messages = getText(getChatPath(user , contact)).split("\\R");
+		ArrayList<Message> list = new ArrayList<>();
+		try {
+			for (String message: messages) {
+			list.add(new Message(message));
+				}
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return list;
+		}
+		
+		return list;
+	}
+	
 	public static boolean userExists(String user) {
-		return getUserList().contains((String) user);
+		return getUsernamesList().contains(user);
 	}
 	
 	public static void tryLogIn(String userName , String password) { //tries a logIn, if is not successful calls error function
@@ -137,7 +182,7 @@ public class DBManager {
 			StartPanel.getInstance().startError("Incorrect password");return;
 		}
 		createIfNotExists(getUserPath().resolve(userName).resolve("contacts") , "directory");
-		UIManager.userMain(getUser(userName));
+		UIManager.userMain(getUserFromName(userName));
 		
 	}
 	
@@ -197,7 +242,7 @@ public class DBManager {
 	}
 	
 	public static boolean canAddContact(User user , String name , int id) {
-		if (getContactList(user).contains(name)) {
+		if (getContactNamesList(user).contains(name)) {
 			AddContactPanel.getInstance().addContactError("Username not aviable"); return false;
 		}
 		if (getIdsFromContacts(user).contains(id)) {
@@ -235,6 +280,23 @@ public class DBManager {
 			
 		} catch (IOException e) {
 			System.out.println("error adding contact");
+		}
+	}
+	
+	public static void sendMessage(User user , String contact , String message) {
+		try {
+			LocalDateTime time = LocalDateTime.now();
+			DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy|HH:mm:ss");
+			String text = "ME" + " " + time.format(format) + " " + message + System.lineSeparator();
+			Files.writeString(getChatPath(user, contact), text , StandardOpenOption.APPEND);
+			//add message for the other user
+			User receiver = getUserFromId(getContactId(user , contact));
+			text = "OTHER"+ " " + text.substring(3);
+			Path ubi = receiver.getContactPath().resolve(getContactFromId(receiver , user.getId())).resolve("chat.txt");
+			Files.writeString(ubi , text , StandardOpenOption.APPEND);
+			
+		} catch (IOException e) {
+			System.out.println("error in send message");
 		}
 	}
 	

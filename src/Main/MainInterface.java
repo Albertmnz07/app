@@ -1,8 +1,8 @@
 package Main;
 
 import javax.swing.*;
-import UI.StartPanel;
 import controlers.DBManager;
+import panels.UI.StartPanel;
 
 public class MainInterface extends JFrame {
 	
@@ -18,7 +18,7 @@ public class MainInterface extends JFrame {
 	}
 	
 	public static void main(String[] args) {
-		DBManager.checkDB(); //check the existence of data base
+		DBManager.checkDB(); //check the existence of data bases
 		main = new MainInterface();
 		main.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}

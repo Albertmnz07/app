@@ -4,12 +4,12 @@ package controlers;
 import java.awt.Dimension;
 import javax.swing.JPanel;
 import Main.MainInterface;
-import UI.AddContactPanel;
-import UI.ChatPanel;
-import UI.SignInPanel;
-import UI.StartPanel;
-import UI.UserMainPanel;
 import objects.User;
+import panels.UI.AddContactPanel;
+import panels.UI.ChatPanel;
+import panels.UI.SignInPanel;
+import panels.UI.StartPanel;
+import panels.UI.UserMainPanel;
 
 public class UIManager {
 	

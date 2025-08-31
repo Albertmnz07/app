@@ -1,4 +1,4 @@
-package UI;
+package panels.UI;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -10,7 +10,7 @@ import javax.swing.*;
 import controlers.UIManager;
 import controlers.DBManager;
 import interfaces.cleneable;
-import utilPanels.FieldWithImage;
+import panels.utilPanels.FieldWithImage;
 
 public class SignInPanel extends JPanel implements cleneable {
 	

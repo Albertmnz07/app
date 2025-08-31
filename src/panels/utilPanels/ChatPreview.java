@@ -1,4 +1,4 @@
-package utilPanels;
+package panels.utilPanels;
 
 import objects.User;
 

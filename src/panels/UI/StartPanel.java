@@ -1,4 +1,4 @@
-package UI;
+package panels.UI;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -11,7 +11,7 @@ import javax.swing.*;
 import controlers.UIManager;
 import controlers.DBManager;
 import interfaces.cleneable;
-import utilPanels.FieldWithImage;
+import panels.utilPanels.FieldWithImage;
 
 public class StartPanel extends JPanel implements cleneable {
 	

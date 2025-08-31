@@ -11,10 +11,7 @@ public class Message {
 	
 	public Message(String text) {
 		
-		String[] separation = text.split(" ");
-		System.out.println(separation[0]);
-		System.out.println(separation[1]);
-		System.out.println(separation[2]);
+		String[] separation = text.split(" " , 3);
 		
 		sender = separation[0];
 		
@@ -28,6 +25,12 @@ public class Message {
 		message = "";
 	}
 	
+	public Message(String sender , LocalDateTime time , String message) {
+		this.sender = sender;
+		this.time = time;
+		this.message = message;
+	}
+	
 	public String getText() {
 		return message;
 	}
@@ -38,6 +41,10 @@ public class Message {
 	
 	public String getCompleteHour() {
 		return time != null ? time.format(DateTimeFormatter.ofPattern("HH:mm:ss")) : "";
+	}
+	
+	public static Message createMessage(String sender , String message) {
+		return new Message(sender , LocalDateTime.now() , message);
 	}
 
 }

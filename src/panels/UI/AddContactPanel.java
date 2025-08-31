@@ -1,4 +1,4 @@
-package UI;
+package panels.UI;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -13,7 +13,7 @@ import controlers.UIManager;
 import controlers.DBManager;
 import interfaces.cleneable;
 import objects.User;
-import utilPanels.FieldWithImage;
+import panels.utilPanels.FieldWithImage;
 
 public class AddContactPanel extends JPanel implements cleneable {
 	
